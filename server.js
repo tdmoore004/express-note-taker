@@ -29,7 +29,6 @@ app.get("/api/notes", (req, res) => {
 // Route for posting new notes to db.json.
 app.post("/api/notes", (req, res) => {
     let newNote = req.body;
-    console.log(newNote);
     fs.readFile(__dirname + "/db/db.json", "utf-8", (err, data) => {
         if (err) throw err;
         let noteList = JSON.parse(data);
@@ -37,7 +36,6 @@ app.post("/api/notes", (req, res) => {
         noteList.forEach((item, i) => {
             item.id = i + 1;
         });
-        console.log(noteList);
         fs.writeFile(__dirname + "/db/db.json", JSON.stringify(noteList), function(err) {
             if (err) throw err;
             console.log("Saved notes have been updated!");
@@ -56,7 +54,6 @@ app.delete("/api/notes/:id", (req, res) => {
         noteList.forEach((item, i) => {
             item.id = i + 1;
         });
-        console.log(noteList);
         fs.writeFile(__dirname + "/db/db.json", JSON.stringify(noteList), function(err) {
             if (err) throw err;
             console.log("Saved notes have been updated!");
