@@ -5,7 +5,7 @@ const fs = require("fs");
 
 // Express server set up.
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Data parsing set up.
 app.use(express.static(__dirname + '/public'));
@@ -64,7 +64,7 @@ app.delete("/api/notes/:id", (req, res) => {
 });
 
 // Route to get the index.html file.
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
