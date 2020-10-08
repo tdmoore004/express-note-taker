@@ -34,6 +34,9 @@ app.post("/api/notes", (req, res) => {
         if (err) throw err;
         let noteList = JSON.parse(data);
         noteList.push(newNote);
+        noteList.forEach((item, i) => {
+            item.id = i + 1;
+        });
         console.log(noteList);
         fs.writeFile(__dirname + "/db/db.json", JSON.stringify(noteList), function(err) {
             if (err) throw err;
@@ -41,6 +44,26 @@ app.post("/api/notes", (req, res) => {
           });
     });
     res.redirect('back');
+});
+
+// Route for deleting notes from saved notes.
+app.delete("/api/notes/:id", (req, res) => {
+    let id = req.params.id;
+    fs.readFile(__dirname + "/db/db.json", "utf-8", (err, data) => {
+        if (err) throw err;
+        let noteList = JSON.parse(data);
+        noteList.splice(id - 1, 1);
+        noteList.forEach((item, i) => {
+            item.id = i + 1;
+        });
+        console.log(noteList);
+        fs.writeFile(__dirname + "/db/db.json", JSON.stringify(noteList), function(err) {
+            if (err) throw err;
+            console.log("Saved notes have been updated!");
+          });
+    });
+    // req.method = "GET";
+    res.redirect(303, "/notes");
 });
 
 // Route to get the index.html file.
