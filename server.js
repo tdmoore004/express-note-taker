@@ -8,7 +8,7 @@ const app = express();
 const PORT = 3000;
 
 // Data parsing set up.
-app.use(express.static( __dirname + '/public' ));
+app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -19,11 +19,28 @@ app.get("/notes", (req, res) => {
 
 // Route for reading and returning db.json file.
 app.get("/api/notes", (req, res) => {
-    return fs.readFile(__dirname + "/db/db.json", function(err, data) {
+    return fs.readFile(__dirname + "/db/db.json", "utf-8", (err, data) => {
         if (err) throw err;
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.end(data);
-      });
+        let noteList = JSON.parse(data);
+        res.send(noteList);
+    });
+});
+
+// Route for posting new notes to db.json.
+app.post("/api/notes", (req, res) => {
+    let newNote = req.body;
+    console.log(newNote);
+    fs.readFile(__dirname + "/db/db.json", "utf-8", (err, data) => {
+        if (err) throw err;
+        let noteList = JSON.parse(data);
+        noteList.push(newNote);
+        console.log(noteList);
+        fs.writeFile(__dirname + "/db/db.json", JSON.stringify(noteList), function(err) {
+            if (err) throw err;
+            console.log("Saved notes have been updated!");
+          });
+    });
+    res.redirect('back');
 });
 
 // Route to get the index.html file.
